@@ -1,0 +1,33 @@
+name = "parc-ferme"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+# The built PWA (apps/web/dist) is served by the same Worker: one deploy, no CORS.
+[assets]
+directory = "../web/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/*", "/card/*", "/share/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "parc-ferme"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID" # from `wrangler d1 create parc-ferme`
+migrations_dir = "migrations"
+
+[triggers]
+# */15: sync the calendar, fetch results, score.
+# */5 : lock reminders (T-60, T-10) and push fan-out. A 15-minute tick alone cannot hit T-10.
+crons = ["*/15 * * * *", "*/5 * * * *"]
+
+[vars]
+VAPID_SUBJECT = "mailto:you@example.com"
+OPENF1_BASE = "https://api.openf1.org/v1"
+# Secrets (set with `wrangler secret put`, or in .dev.vars locally):
+#   VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, ADMIN_TOKEN
+
+# Fonts for the share card are bundled as binary data.
+[[rules]]
+type = "Data"
+globs = ["**/*.woff"]
+fallthrough = true

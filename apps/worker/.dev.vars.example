@@ -1,0 +1,4 @@
+# Copy to .dev.vars and fill in. Generate keys with `pnpm vapid`.
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+ADMIN_TOKEN=dev-admin

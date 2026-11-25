@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Everything visual hangs off these, so the whole cabinet can be
+ * re-skinned here (or from a design tool) without touching the screens.
+ * Mirrors the PARC FERMÉ design system's tokens.json one to one.
+ */
+@theme {
+  /* Colour */
+  --color-void: #05050a;
+  --color-panel: #0d0d18;
+  --color-line: #26263a;
+  --color-edge: #66668c;
+  --color-dim: #8585a3;
+  --color-ink: #f2f2ff;
+  --color-neon-red: #ff2d55;
+  --color-neon-cyan: #00e5ff;
+  --color-neon-yellow: #ffe600;
+  --color-neon-green: #39ff14;
+  --color-neon-pink: #ff3df2;
+  --color-wash-hit: #0f2e0a;
+  --color-wash-part: #2e2a00;
+  --color-wash-miss: #330a17;
+
+  /* Type */
+  --font-pixel: 'Press Start 2P', ui-monospace, monospace;
+  --font-term: 'VT323', ui-monospace, monospace;
+
+  --text-pixel-hero-lg: 44px;
+  --text-pixel-hero: 28px;
+  --text-pixel-timer-lg: 26px;
+  --text-pixel-timer: 20px;
+  --text-pixel-h1: 18px;
+  --text-pixel-score: 15px;
+  --text-pixel-title: 12px;
+  --text-pixel-button: 11px;
+  --text-pixel-label: 10px;
+  --text-pixel-micro: 9px;
+  --text-term-body: 22px;
+  --text-term-small: 18px;
+  --text-term-unit: 15px;
+
+  /* Space and shape. The root is 22px, so pin the spacing unit in px. */
+  --spacing: 4px;
+  --radius-none: 0px;
+  --shadow-pixel: 4px 4px 0 0 #000000;
+
+  /* Motion */
+  --animate-blink: blink 1s steps(1) infinite;
+  --animate-row-in: row-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  --animate-champion: champion 1.2s steps(4) infinite;
+  --animate-flicker: flicker 6s linear infinite;
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  @keyframes row-in {
+    0% { opacity: 0; transform: translateX(-28px); }
+    60% { opacity: 1; transform: translateX(4px); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes champion {
+    0% { color: var(--color-neon-yellow); }
+    25% { color: var(--color-neon-pink); }
+    50% { color: var(--color-neon-cyan); }
+    75% { color: var(--color-neon-green); }
+  }
+  @keyframes flicker {
+    0%, 48%, 52%, 100% { opacity: 0.9; }
+    50% { opacity: 0.6; }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-term);
+    font-size: 22px;
+    line-height: 1.15;
+    -webkit-font-smoothing: none;
+  }
+  body { min-height: 100dvh; margin: 0; }
+  h1, h2, h3 {
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-neon-yellow);
+    outline-offset: 3px;
+  }
+  ::selection { background: var(--color-neon-yellow); color: var(--color-void); }
+}
+
+/* CRT overlay: scanlines and a vignette. Decorative, toggled by the player. */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0) 0 2px, rgb(0 0 0 / 0.28) 2px 4px),
+    radial-gradient(ellipse at center, rgb(0 0 0 / 0) 55%, rgb(0 0 0 / 0.55) 100%);
+  animation: var(--animate-flicker);
+}
+.crt-glow { text-shadow: 0 0 6px currentColor; }
+/* Controls keep crisp labels under the glow. */
+.crt-glow :is(button, .no-glow) { text-shadow: none; }
+
+/* NOW LOADING blocks: eight cells stepping on and off in sequence. */
+.loadbar i { animation: var(--animate-blink); animation-duration: 1.6s; }
+.loadbar i:nth-child(2) { animation-delay: -1.4s; }
+.loadbar i:nth-child(3) { animation-delay: -1.2s; }
+.loadbar i:nth-child(4) { animation-delay: -1s; }
+.loadbar i:nth-child(5) { animation-delay: -0.8s; }
+.loadbar i:nth-child(6) { animation-delay: -0.6s; }
+.loadbar i:nth-child(7) { animation-delay: -0.4s; }
+.loadbar i:nth-child(8) { animation-delay: -0.2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "parc-ferme",
+  "private": true,
+  "packageManager": "pnpm@10.29.2",
+  "scripts": {
+    "dev": "pnpm --filter @parc-ferme/web build && pnpm -r --parallel dev",
+    "build": "pnpm --filter @parc-ferme/web build",
+    "test": "pnpm --filter @parc-ferme/worker test",
+    "typecheck": "pnpm -r typecheck",
+    "db:migrate:local": "pnpm --filter @parc-ferme/worker db:migrate:local",
+    "db:migrate:remote": "pnpm --filter @parc-ferme/worker db:migrate:remote",
+    "seed": "pnpm --filter @parc-ferme/worker seed",
+    "vapid": "pnpm --filter @parc-ferme/worker vapid",
+    "deploy": "pnpm build && pnpm --filter @parc-ferme/worker run deploy"
+  }
+}
